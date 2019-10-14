@@ -1,0 +1,106 @@
+- name: "Bootstrap Nodes"
+  hosts: all
+  remote_user: vagrant
+  become: true
+  gather_facts: False
+
+  vars:
+    ip_gw: '172.16.8.254'
+    ip_dns: '192.168.44.1'
+    vagrant_root_rsa: "[u'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6PRqVqtWkL6AlJP3EeKd67g8FGGHvnp0ytS/uS/UKR8xCdgSUiaVTC1dZGLkgno5g8/er0LI7rlQ2bNCH3xhzv6dxYJIP+3zpzfdBLJHd9JxA9fgrvvTLcgtgdkcUpyuknCUcjgOXAAVMdg4d7zvY6GXw8/EM0js6Tg1w2GexvhgeH6tFGeef1EsetGZ9I3QoXRZ8OgMybSKMH7R4lLbsGwoaHeossojQqBKn0HR3n2AtuZDXiDxNiNxemRuXNtMihiM48ezfi3upnEiZGE6OZDkP/YHDEbKahHip9hArSYFAo0gE9M7ZQh4sQ85mj2v0yVvB23YM9yfeaNzrPrcH pierre@pc-pierre-dawan']"
+    vagrant_user_rsa: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6PRqVqtWkL6AlJP3EeKd67g8FGGHvnp0ytS/uS/UKR8xCdgSUiaVTC1dZGLkgno5g8/er0LI7rlQ2bNCH3xhzv6dxYJIP+3zpzfdBLJHd9JxA9fgrvvTLcgtgdkcUpyuknCUcjgOXAAVMdg4d7zvY6GXw8/EM0js6Tg1w2GexvhgeH6tFGeef1EsetGZ9I3QoXRZ8OgMybSKMH7R4lLbsGwoaHeossojQqBKn0HR3n2AtuZDXiDxNiNxemRuXNtMihiM48ezfi3upnEiZGE6OZDkP/YHDEbKahHip9hArSYFAo0gE9M7ZQh4sQ85mj2v0yVvB23YM9yfeaNzrPrcH pierre@pc-pierre-dawan"
+    vagrant_name: 'stagiaire'
+    vagrant_comment: 'Compte Stagaire'
+    vagrant_password: '$6$gtLQy.G60/qMJ/Ny$qTHIm6tdMoFqLKM1CqZkyo9z2sfLNiYDxg2LDFp.aNggk.McxEPeA1NLxESFKZZx4M5.rvDxuYOOakhgORzxO/'
+
+
+  handlers:
+    - name: restart ssh
+      service:
+        name: sshd
+        state: restarted
+  tasks:
+    - raw: |
+        if [ $(command -v apt-get) ]; then apt-get update && apt-get install -yq python python3 sudo && apt-get clean; \
+        elif [ $(command -v yum) ]; then yum makecache fast && yum update -y && yum install -y python sudo && yum clean all; \
+        fi
+      register: output
+
+    - setup: ~
+
+    - set_fact:
+        debian_pkgs:
+          - "python-apt"
+        sudo: 'sudo'
+      when: ansible_os_family == 'Debian'
+
+    - set_fact:
+        redhat_pkgs:
+          - "net-tools"
+        sudo: 'wheel'
+      when: ansible_os_family == 'RedHat'
+
+    - name: upgrade | Debian
+      apt:
+        upgrade: yes
+        #update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: upgrade | RedHat
+      yum:
+        name: '*'
+        state: latest
+      when: ansible_os_family == 'RedHat'
+
+    - name: set requirement | Debian
+      apt:
+        name: '{{ item }}'
+        state: present
+      with_items: '{{ debian_pkgs }}'
+      when: ansible_os_family == 'Debian'
+
+    - name: set requirement | RedHat
+      yum:
+        name: '{{ item }}'
+        state: present
+      with_items: '{{ redhat_pkgs }}'
+      when: ansible_os_family == 'RedHat'
+
+    - name: set DNS and Gateway
+      shell: |
+        ip r add default via "{{ ip_gw }}" dev "{{ ansible_default_ipv4.interface }}";
+        echo -e 'nameserver "{{ ip_dns }}"' > /etc/resolv.conf;
+      args:
+        executable: /bin/bash
+      changed_when: no
+      register: cmdoutput
+
+    - name: "Ajout de la clef publique pour le compte root"
+      authorized_key:
+        user : root
+        key  : "{{ item }}"
+      with_items: '{{ vagrant_root_rsa }}'
+
+    - name: "Création de l'utilisateur {{ vagrant_name }}"
+      user:
+        name            : "{{ vagrant_name }}"
+        #password: "{% verbatim %}{{ password }}{% endverbatim %}"
+        password        : "{{ vagrant_password }}"
+        comment         : "{{ vagrant_comment }}"
+        shell           : "{{ shell | default('/bin/bash') }}"
+        group           : '{{ sudo }}'
+        update_password : on_create
+      no_log: true
+
+    - name: "Ajout de la clef publique pour le compte {{ vagrant_name }}"
+      authorized_key:
+        user : "{{ vagrant_name }}"
+        key  : "{{ vagrant_user_rsa }}"
+
+    - name: 'SSH PasswordAuthentication'
+      lineinfile:
+        backup: yes
+        dest: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication .*'
+        line: 'PasswordAuthentication yes'
+      notify: 'restart ssh'
