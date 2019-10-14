@@ -31,8 +31,9 @@ Vagrant.configure(2) do |config|
         ip: "#{ip}",
         netmask: "#{cidr}"
       
-      machine.vm.synced_folder "puppet/manifests", "/root/manifests"
-
+      if vmname == "master.formation.lan"
+        machine.vm.synced_folder "puppet/manifests", "/etc/puppetlabs/code/environments/production/manifests"
+      end
       machine.vm.provision "file", source: "install_puppet.sh", destination: "$HOME/install_puppet.sh"
       machine.vm.provision :ansible do |ansible|
         # Disable default limit to connect to all the machines
