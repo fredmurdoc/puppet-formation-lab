@@ -32,9 +32,11 @@ Vagrant.configure(2) do |config|
         netmask: "#{cidr}"
       
       if vmname == "master.formation.lan"
-        machine.vm.synced_folder "puppet/manifests", "/etc/puppetlabs/code/environments/production/manifests"
+        machine.vm.synced_folder "puppet/production/manifests", "/etc/puppetlabs/code/environments/production/manifests"
       end
+      
       machine.vm.provision "file", source: "install_puppet.sh", destination: "$HOME/install_puppet.sh"
+      machine.vm.provision "file", source: "configure_puppet.sh", destination: "$HOME/configure_puppet.sh"
       machine.vm.provision :ansible do |ansible|
         # Disable default limit to connect to all the machines
         ansible.limit = "all"
@@ -47,9 +49,10 @@ Vagrant.configure(2) do |config|
 	echo '#{ip} #{vmname}' | sudo tee -a /etc/hosts
 SCRIPT
       machine.vm.provision "shell" do |s|
-	s.inline = $script
+	      s.inline = $script
       end
 
+      #machine.vm.provision "shell", inline: "bash /home/vagrant/install_puppet.sh"
       #machine.vm.provision "shell", path: "install_puppet.sh"
     end
   end

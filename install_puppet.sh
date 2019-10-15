@@ -24,4 +24,5 @@ else
         echo "install client : $mhostname"
         sudo apt install -y puppet-agent
     fi
+    
 fi
