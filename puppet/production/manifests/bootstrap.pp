@@ -8,4 +8,6 @@ class bootstrap {
   class {'manage_ssh':}
   # declaration de la classes via le mode resource, afin de spécifier des parametres
   class {'manage_users':}
+  
+
 }
