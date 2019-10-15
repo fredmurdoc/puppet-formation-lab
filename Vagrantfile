@@ -32,7 +32,7 @@ Vagrant.configure(2) do |config|
         netmask: "#{cidr}"
       
       if vmname == "master.formation.lan"
-        machine.vm.synced_folder "puppet/production/manifests", "/etc/puppetlabs/code/environments/production/manifests"
+        machine.vm.synced_folder "puppet/production", "/etc/puppetlabs/code/environments/production"
       end
       
       machine.vm.provision "file", source: "install_puppet.sh", destination: "$HOME/install_puppet.sh"
