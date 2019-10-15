@@ -11,15 +11,16 @@ else
     echo "DEBIAN-LIKE"
     cd /tmp
     wget http://apt.puppetlabs.com/puppet6-release-xenial.deb
-
     sudo dpkg -i puppet6-release-xenial.deb
-
     sudo apt update
 
     mhostname="$(hostname)"
     if [ "${mhostname}" == "master" ]; then
         echo "install server master : $mhostname"
-        sudo apt install -y puppetserver
+        wget https://apt.puppet.com/puppet-tools-release-xenial.deb
+        sudo dpkg -i puppet-tools-release-xenial.deb
+        sudo apt update
+        sudo apt install -y puppetserver pdk
     else
         echo "install client : $mhostname"
         sudo apt install -y puppet-agent
