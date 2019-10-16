@@ -35,7 +35,6 @@ define apache::vhost(
     mode         => '0775',
     owner   => "${apache::params::user}",
     group   => "${apache::params::group}",
-    validate_cmd => "/usr/sbin/${apache::params::service} -t -f %",
     notify       => Service["${apache::params::service}"]
   }
 
@@ -55,7 +54,8 @@ define apache::vhost(
 
   notice("flagdebian Setted to : '${apache::params::is_debian_like}'")
 
-  if apache::params::is_debian_like  {
+  if $apache::params::is_debian_like  {
+    notice('generate symlink ')
     file{ "/etc/${apache::params::service}/sites-enabled/${apache_hostname}.conf":
       ensure  => 'link',
       target  => "/etc/${apache::params::service}/${apache::params::vhost_confdir}/${apache_hostname}.conf",
