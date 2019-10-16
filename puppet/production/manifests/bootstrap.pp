@@ -6,8 +6,6 @@ class bootstrap {
   # declaration de la classes avec include
   include vars
   class {'manage_ssh':}
-  # declaration de la classes via le mode resource, afin de spécifier des parametres
-  class {'manage_users':}
-  
+  create_resources('user', hiera('bootstrap::users'))
 
 }

@@ -6,6 +6,7 @@ node default {
 }
 
 node srv01.formation.lan, srv02.formation.lan {
+  include bootstrap
   class {'apache::engine':
     mod_proxy => true
   }
