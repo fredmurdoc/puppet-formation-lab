@@ -1,0 +1,5 @@
+---
+  apache::params::color: '#00F0F0'
+  virtual_hosts:
+     - front01.example.com
+     - front02.example.com

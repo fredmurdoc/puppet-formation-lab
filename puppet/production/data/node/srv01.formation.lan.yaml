@@ -1,0 +1,10 @@
+--- 
+  apache::params::color: '#00FF00'
+  apache::params::is_debian_like: true
+  virtual_hosts:
+     back01.example.com:
+       hostname: back01.example.com
+       color: '#878787'
+     back02.example.com:
+       hostname: back02.example.com
+       color: '#DEDEFF'

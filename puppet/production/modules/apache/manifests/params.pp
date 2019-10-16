@@ -4,7 +4,11 @@
 #
 # @example
 #   include apache::params
-class apache::params {
+class apache::params(
+  $color = '#FF0000'
+) {
+# utilisation d'un fact personnalisé (cf. repertoire facts.d)
+  $date_generation = $facts['puppet_generation_timestamp']
 
   case $facts['os']['family'] {
     'Debian' : {

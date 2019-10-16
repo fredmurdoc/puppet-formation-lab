@@ -9,11 +9,14 @@ node srv01.formation.lan, srv02.formation.lan {
   class {'apache::engine':
     mod_proxy => true
   }
-  apache::vhost{'www.example.com':
-    apache_hostname => 'www.example.com'
-  }
+}
 
-  apache::vhost{'www.example2.com':
-    apache_hostname => 'www.example2.com'
+
+hiera('virtual_hosts').each |$key, $vhost|{
+  notice("${vhost}")
+  notice("${vhost} - generate apache colorized ${vhost['color']} vhost ${vhost['hostname']}")
+  apache::vhost{"${vhost['hostname']}":
+    apache_hostname => "${vhost['hostname']}",
+    color           => "${vhost['color']}"
   }
 }

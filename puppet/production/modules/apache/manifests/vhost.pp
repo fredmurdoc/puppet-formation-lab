@@ -5,11 +5,14 @@
 # @example
 #   include apache::vhost
 define apache::vhost(
-  $apache_hostname
+  $apache_hostname,
+  $color = "${apache::params::color}"
 ) {
   include apache::params
 
   $vhost_htmldir = "${apache::params::www_dir_prefix}/${apache_hostname}"
+
+  notice("generate vhost files for  : '${apache_hostname}',www dir prefix : ${apache::params::www_dir_prefix}")
 
   file{ "${apache::params::www_dir_prefix}/${apache_hostname}":
     ensure => 'directory',
@@ -32,7 +35,8 @@ define apache::vhost(
     mode         => '0775',
     owner   => "${apache::params::user}",
     group   => "${apache::params::group}",
-    #validate_cmd => "/usr/sbin/${service} -t -f %",
+    validate_cmd => "/usr/sbin/${apache::params::service} -t -f %",
+    notify       => Service["${apache::params::service}"]
   }
 
   # utilisation de resources statiques
@@ -49,11 +53,13 @@ define apache::vhost(
     group   => "${apache::params::group}",
   }
 
-  if apache::params::is_debian_like == true {
+  notice("flagdebian Setted to : '${apache::params::is_debian_like}'")
+
+  if apache::params::is_debian_like  {
     file{ "/etc/${apache::params::service}/sites-enabled/${apache_hostname}.conf":
-      ensure       => 'link',
-      target       => "/etc/${apache::params::service}/${apache::params::vhost_confdir}/${apache_hostname}.conf",
-      mode         => '0775',
+      ensure  => 'link',
+      target  => "/etc/${apache::params::service}/${apache::params::vhost_confdir}/${apache_hostname}.conf",
+      mode    => '0775',
       owner   => "${apache::params::user}",
       group   => "${apache::params::group}",
     }
