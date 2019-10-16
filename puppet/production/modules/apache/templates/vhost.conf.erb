@@ -1,6 +1,6 @@
 <%# ceci est un commentaire %>
 
 <VirtualHost *:80>
-  DocumentRoot "<%= @www_dir_prefix %>/<%= @apache_hostname %>"
+  DocumentRoot "<%= @vhost_htmldir %>"
   ServerName <%= @apache_hostname %>
 </VirtualHost>
