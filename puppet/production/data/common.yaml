@@ -40,3 +40,8 @@ bootstrap::ssh_authorized_keys:
     user: 'test'
     key: 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDANG24ezaSLseB3fMkFR7U69I9akRKNvPwBnfll1k1J0+RrIneZoFkaVu0r6v89g1ADJb+qQxT0E6iw6slqSwFR8nO6pibeFJ7QlJaIqnvQ5QQDS6ScFK00ed9M6OwC9xHGmNKSDDE0Z68eRsbJzkvloJFCwMINx9kB5n9IEbm4ZdkhCdN0vTjIynTozbvIJ4Ljp7XZxPhHSB3NG0xxIq7qEll7IN9iLZyb6+/PfjZpFdLawTtFqiowNbd5yY/Taclr8Th/NKKoRJO1EbO9QZ5vlHWDVLMgEwJNSN028fywb+3w3iXhcwTkf68OFa2SWtzYQjJJAcBmXapRWfbdhcl'
     type: 'ssh-rsa'
+  admin@fake:
+    ensure: 'present'
+    user: 'admin'
+    key: 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDANG24ezaSLseB3fMkFR7U69I9akRKNvPwBnfll1k1J0+RrIneZoFkaVu0r6v89g1ADJb+qQxT0E6iw6slqSwFR8nO6pibeFJ7QlJaIqnvQ5QQDS6ScFK00ed9M6OwC9xHGmNKSDDE0Z68eRsbJzkvloJFCwMINx9kB5n9IEbm4ZdkhCdN0vTjIynTozbvIJ4Ljp7XZxPhHSB3NG0xxIq7qEll7IN9iLZyb6+/PfjZpFdLawTtFqiowNbd5yY/Taclr8Th/NKKoRJO1EbO9QZ5vlHWDVLMgEwJNSN028fywb+3w3iXhcwTkf68OFa2SWtzYQjJJAcBmXapRWfbdhcl'
+    type: 'ssh-rsa'
