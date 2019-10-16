@@ -49,7 +49,7 @@ define apache::vhost(
     group   => "${apache::params::group}",
   }
 
-  if $facts['os']['family'] == 'Debian' {
+  if apache::params::is_debian_like == true {
     file{ "/etc/${apache::params::service}/sites-enabled/${apache_hostname}.conf":
       ensure       => 'link',
       target       => "/etc/${apache::params::service}/${apache::params::vhost_confdir}/${apache_hostname}.conf",

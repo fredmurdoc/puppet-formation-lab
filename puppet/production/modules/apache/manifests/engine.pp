@@ -7,20 +7,20 @@
 class apache::engine (
   $mod_proxy = true
 ) inherits apache::params {
-
-  if $mod_proxy{
-    exec { 'active_proxy_mod':
-      command => '/usr/sbin/a2enmod proxy_http',
-      notify  => Service[$service]
+  if $is_debian_like == true {
+    if $mod_proxy{
+      exec { 'active_proxy_mod':
+        command => '/usr/sbin/a2enmod proxy_http',
+        notify  => Service[$service]
+      }
+    }
+    else{
+      exec { 'desactive_proxy_mod':
+        command => '/usr/sbin/a2dismod proxy_http',
+        notify  => Service[$service]
+      }
     }
   }
-  else{
-    exec { 'desactive_proxy_mod':
-      command => '/usr/sbin/a2dismod proxy_http',
-      notify  => Service[$service]
-    }
-  }
-
   notify{'install_apache_package' :
     message => "package ${package}";
     }
