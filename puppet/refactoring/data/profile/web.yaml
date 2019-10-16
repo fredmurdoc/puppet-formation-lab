@@ -1,0 +1,5 @@
+---
+virtual_hosts:
+  rp01:
+    apache_hostname: rp01.example.com
+    upstream_server: 'http://172.16.8.22:8080/'

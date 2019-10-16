@@ -1,0 +1,10 @@
+---
+version: 5
+hierarchy:
+  - name: "data"
+    paths:
+      - "node/%{trusted.certname}.yaml"
+      - "profile/base.yaml"
+      - "profile/db.yaml"
+      - "profile/web.yaml"
+      - "common.yaml"

@@ -1,0 +1,11 @@
+<%# ceci est un commentaire %>
+
+<VirtualHost *:80>
+  ServerName <%= @apache_hostname %>
+  DocumentRoot "<%= @vhost_htmldir %>"
+  <Directory "<%= @vhost_htmldir %>">
+    Order allow,deny
+    Allow from all
+    Require all granted
+  </Directory>
+</VirtualHost>

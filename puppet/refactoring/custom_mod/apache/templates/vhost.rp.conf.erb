@@ -1,0 +1,6 @@
+<VirtualHost *:*>
+ServerName <%= @apache_hostname %>
+    ProxyPreserveHost On
+    ProxyPass        "/" "<%= @upstream_server %>"
+    ProxyPassReverse "/" "<%= @upstream_server %>"
+</VirtualHost>

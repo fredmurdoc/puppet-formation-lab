@@ -1,0 +1,19 @@
+---
+profile::db::databases:
+  mydb:
+    user: 'myuser'
+    password: 'mypass'
+    host: 'localhost'
+    grant: ['SELECT', 'UPDATE']
+
+  myadmindb:
+    user: 'myadminuser'
+    password: 'myadminpass'
+    host: 'localhost'
+    grant: ['SELECT', 'UPDATE']
+
+  geodb:
+    user: 'myadminuser'
+    password: 'myadminpass'
+    host: 'localhost'
+    grant: ['SELECT', 'UPDATE']
